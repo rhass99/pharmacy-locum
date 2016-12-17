@@ -2,14 +2,16 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/gorilla/sessions"
 	"github.com/rhass99/pharmacy-locum/storage"
 	"log"
 	"net/http"
 )
 
+var store = sessions.NewCookieStore([]byte(storage.RandID(50)))
 var db storage.Store
 
-func SignApplicant(w http.ResponseWriter, r *http.Request) {
+func SignUpApplicant(w http.ResponseWriter, r *http.Request) {
 	var a *storage.Applicant
 	db.Path = "/Users/rami/go/src/github.com/rhass99/pharmacy-locum/db/applicants.db"
 	defer db.Close()
@@ -42,4 +44,8 @@ func SignApplicant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	w.Write(j)
+}
+
+func SignInApplicant(w http.ResponseWriter, r *http.Request) {
+
 }
