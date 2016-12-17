@@ -1,0 +1,10 @@
+syntax = "proto3";
+package storage;
+
+message ApSignup {
+	string ID = 1;
+	string Firstname = 2;
+	string Lastname = 3;
+	string Email = 4;
+	string Password = 5;
+}
