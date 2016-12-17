@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
 	"github.com/rhass99/pharmacy-locum/storage"
 	//"github.com/satori/go.uuid"
@@ -28,6 +29,7 @@ var loginTmpl = template.Must(template.New("login.html").ParseFiles("tmpl/login.
 var profileTmpl = template.Must(template.New("profile.html").ParseFiles("tmpl/profile.html"))
 
 var store = sessions.NewCookieStore([]byte(storage.RandId(50)))
+
 var db storage.Store
 
 func ProfileApplicantGET(w http.ResponseWriter, r *http.Request) {
@@ -52,16 +54,21 @@ func SignUpApplicantGET(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignUpApplicantPOST(w http.ResponseWriter, r *http.Request) {
-	var a *storage.Applicant
+	var a storage.Applicant
 	db.Path = "/Users/rami/go/src/github.com/rhass99/pharmacy-locum/db/applicants.db"
 	defer db.Close()
 
-	err := json.NewDecoder(r.Body).Decode(&a)
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+	decoder := schema.NewDecoder()
+	err = decoder.Decode(&a, r.PostForm)
 	if err != nil {
 		log.Println(err)
 	}
 
-	a.ID = storage.RandId(20)
+	a.ID = storage.RandId(50)
 	a.Password = string(storage.WeakPasswordHash(a.Password))
 
 	err = db.Open("Applicant")
@@ -69,7 +76,7 @@ func SignUpApplicantPOST(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	err = db.CreateApplicant(a)
+	err = db.CreateApplicant(&a)
 	if err != nil {
 		log.Println(err)
 	}
@@ -77,16 +84,14 @@ func SignUpApplicantPOST(w http.ResponseWriter, r *http.Request) {
 	aback, err := db.GetApplicants()
 	if err != nil {
 		log.Println(err)
+
 	}
 	j, err := json.Marshal(aback)
 	if err != nil {
+		log.Println(err)
 		log.Println(err)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	w.Write(j)
 }
-
-// func SignInApplicant(w http.ResponseWriter, r *http.Request) {
-
-// }

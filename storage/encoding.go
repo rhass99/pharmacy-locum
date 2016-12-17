@@ -6,11 +6,12 @@ import (
 )
 
 type Applicant struct {
-	ID        string `json:"id"`
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	ID        string `schema:"id"`
+	Firstname string `schema:"firstname"`
+	Lastname  string `schema:"lastname"`
+	Email     string `schema:"email"`
+	Password  string `schema:"password"`
+	Password2 string `schema:"password2"`
 }
 
 func (a *Applicant) MarshalBinary() ([]byte, error) {
@@ -38,6 +39,5 @@ func (a *Applicant) UnmarshalBinary(data []byte) error {
 	a.Firstname = pb.GetFirstname()
 	a.Lastname = pb.GetLastname()
 	a.Email = pb.GetEmail()
-	a.Password = pb.GetPassword()
 	return nil
 }
