@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/rhass99/pharmacy-locum/storage"
 	//"github.com/satori/go.uuid"
-	//"fmt"
+	"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -39,11 +39,38 @@ func ProfileApplicantGET(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LoginApplicantGET(w http.ResponseWriter, r *http.Request) {
-	err := loginTmpl.Execute(w, nil)
+func LoginApplicantPOST(w http.ResponseWriter, r *http.Request) {
+
+	db.Path = "/Users/rami/go/src/github.com/rhass99/pharmacy-locum/db/applicants.db"
+	db.Open("Applicant")
+	defer db.Close()
+
+	var u User
+	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
 	}
+	decoder := schema.NewDecoder()
+	err = decoder.Decode(&u, r.PostForm)
+	if err != nil {
+		log.Println(err)
+	}
+
+	a, err := db.GetApplicant(string(u.Email))
+	if err != nil {
+		log.Println(err)
+	} else if a == nil {
+		fmt.Fprintf(w, "user DOESNT exit")
+	} else if a.Email == u.Email {
+		fmt.Fprintf(w, "User Exists")
+	}
+
+	// if a.Email == u.Email {
+	// 	fmt.Fprintf(w, "user exits")
+	// } else {
+	// 	fmt.Fprintf(w, "user DOESNT exit")
+	// }
+
 }
 
 func LoginApplicantGET(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +122,6 @@ func SignUpApplicantPOST(w http.ResponseWriter, r *http.Request) {
 	}
 	j, err := json.Marshal(aback)
 	if err != nil {
-		log.Println(err)
 		log.Println(err)
 	}
 	w.Header().Set("Content-Type", "application/json")

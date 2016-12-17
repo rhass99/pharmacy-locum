@@ -18,7 +18,7 @@ func main() {
 	r.HandleFunc("/signup", api.SignUpApplicantGET).Methods("GET")
 	r.HandleFunc("/login", api.LoginApplicantGET).Methods("GET")
 	r.HandleFunc("/profile", api.ProfileApplicantGET).Methods("GET")
-	//r.HandleFunc("/login", api.LoginPOST).Methods("Post")
+	r.HandleFunc("/login", api.LoginApplicantPOST).Methods("Post")
 
 	http.ListenAndServe(":8080", r)
 }
