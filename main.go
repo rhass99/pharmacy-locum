@@ -14,7 +14,11 @@ func handlerz(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/handlerz", handlerz)
-	r.HandleFunc("/signup", api.SignUpApplicant).Methods("POST")
+	r.HandleFunc("/signup", api.SignUpApplicantPOST).Methods("POST")
+	r.HandleFunc("/signup", api.SignUpApplicantGET).Methods("GET")
+	r.HandleFunc("/login", api.LoginApplicantGET).Methods("GET")
+	r.HandleFunc("/profile", api.ProfileApplicantGET).Methods("GET")
+	//r.HandleFunc("/login", api.LoginPOST).Methods("Post")
 
 	http.ListenAndServe(":8080", r)
 }

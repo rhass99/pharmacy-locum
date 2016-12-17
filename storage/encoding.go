@@ -38,5 +38,6 @@ func (a *Applicant) UnmarshalBinary(data []byte) error {
 	a.Firstname = pb.GetFirstname()
 	a.Lastname = pb.GetLastname()
 	a.Email = pb.GetEmail()
+	a.Password = pb.GetPassword()
 	return nil
 }
