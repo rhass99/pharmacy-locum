@@ -13,8 +13,8 @@ import (
 )
 
 type User struct {
-	Id    int
-	email string
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
 }
 
 type Session struct {
@@ -34,6 +34,13 @@ var db storage.Store
 
 func ProfileApplicantGET(w http.ResponseWriter, r *http.Request) {
 	err := profileTmpl.Execute(w, nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func LoginApplicantGET(w http.ResponseWriter, r *http.Request) {
+	err := loginTmpl.Execute(w, nil)
 	if err != nil {
 		log.Println(err)
 	}
